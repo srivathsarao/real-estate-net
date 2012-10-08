@@ -1,0 +1,216 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+</head>
+<body>
+	<img src="$currentdir/templates/logo.gif" alt="logo" width=90% height=90%/>
+	<br />
+	<br />
+	<div style="font-size: small;">
+		#if($reportBean.isCustomers())
+		<br />
+		<p style="font-weight: bold;">Customer Report</p>
+		<br />
+		<table border="1">
+			<tr>
+				<td bgcolor="#C0C0C0" style="font-weight: bold;">Customer Name</td>
+				<td bgcolor="#C0C0C0" style="font-weight: bold;">Phone</td>
+				<td bgcolor="#C0C0C0" style="font-weight: bold;">Mobile</td>
+				<td bgcolor="#C0C0C0" style="font-weight: bold;">Total Over Due Amount</td>
+				<td bgcolor="#C0C0C0" style="font-weight: bold;">Total Due Amount</td>
+				<td bgcolor="#C0C0C0" style="font-weight: bold;">Total Paid Amount</td>
+				<td bgcolor="#C0C0C0" style="font-weight: bold;">Payment Due Date</td>
+			</tr>
+			#if($reportBean.isOverDue())
+			#foreach($overDueItem in $TotalOverDueList)
+			<tr bgcolor="F5A9A9">
+				<td>$overDueItem.getCustomer().getFirstName() $overDueItem.getCustomer().getLastName()</td>
+				<td>$overDueItem.getCustomer().getPhone()</td>
+				<td>$overDueItem.getCustomer().getMobile()</td>
+
+				#if($reportBean.isCompleteReport())
+				<td>Rs. $overDueItem.getPendingAmountTillDate()</td> 
+				#else
+				<td>Rs. $overDueItem.getPendingAmountFromTill($reportBean.getFromDate(), $reportBean.getToDate())</td> 
+				#end 
+				
+				<td />
+				<td />
+				<td>$dateFormatter.format($overDueItem.getLastPaymentDueDate())</td>
+			</tr>
+			#end
+			#end
+			
+			#if($reportBean.isDue())
+			#foreach($dueItem in $TotalDueList)
+			<tr bgcolor="ORANGE">
+				<td>$dueItem.getCustomer().getFirstName() $dueItem.getCustomer().getLastName()</td>
+				<td>$dueItem.getCustomer().getPhone()</td>
+				<td>$dueItem.getCustomer().getMobile()</td>
+				<td />
+				
+				#if($reportBean.isCompleteReport())
+				<td>Rs. $dueItem.getFuturePendingAmount()</td> 
+				#else
+				<td>Rs. $dueItem.getFuturePendingAmountFromTill($reportBean.getFromDate(), $reportBean.getToDate())</td> 
+				#end 
+				
+				<td />
+				<td>$dateFormatter.format($dueItem.getLastPaymentDueDate())</td>
+			</tr>
+			#end
+			#end
+			
+			#if($reportBean.isPaid())
+			#foreach($paidItem in $TotalPaidList)
+			<tr bgcolor="CCFF99">
+				<td>$paidItem.getCustomer().getFirstName() $paidItem.getCustomer().getLastName()</td>
+				<td>$paidItem.getCustomer().getPhone()</td>
+				<td>$paidItem.getCustomer().getMobile()</td>
+
+				<td />
+				<td />
+								
+				#if($reportBean.isCompleteReport())
+				<td>Rs. $paidItem.getAmountPaidTillDate()</td> 
+				#else
+				<td>Rs. $paidItem.getAmountPaidFromTill($reportBean.getFromDate(), $reportBean.getToDate())</td> 
+				#end
+				
+				<td>$dateFormatter.format($paidItem.getLastPaymentDueDate())</td>
+			</tr>
+			#end
+			#end
+			
+		</table>
+		<br />
+		
+		#if($reportBean.isPaid())
+		#if($reportBean.isCompleteReport())
+		<p>Total Amount Paid : Rs. $totalCustomerPaymentUtil.getAmountPaidTillDate()</p> 
+		#else
+		<p>Total Amount Paid : Rs. $totalCustomerPaymentUtil.getAmountPaidFromTill($reportBean.getFromDate(), $reportBean.getToDate())</p> 
+		#end
+		#end
+		
+		#if($reportBean.isDue())
+		#if($reportBean.isCompleteReport())
+		<p>Total Due Amount : Rs. $totalCustomerPaymentUtil.getFuturePendingAmount()</p> 
+		#else
+		<p>Total Due Amount : Rs. $totalCustomerPaymentUtil.getFuturePendingAmountFromTill($reportBean.getFromDate(), $reportBean.getToDate())</p> 
+		#end
+		#end
+		
+		#if($reportBean.isOverDue())
+		#if($reportBean.isCompleteReport())
+		<p>Total Over Due Amount : Rs. $totalCustomerPaymentUtil.getPendingAmountTillDate()</p> 
+		#else
+		<p>Total Over Due Amount : Rs. $totalCustomerPaymentUtil.getPendingAmountFromTill($reportBean.getFromDate(), $reportBean.getToDate())</p> 
+		#end
+		#end
+		
+		#end
+		
+		#if($reportBean.isAgents())
+		<br />
+		<p style="font-weight: bold;">Agent Report</p>
+		<br />
+		<table border="1" bgcolor="#C0C0C0">
+			<tr>
+				<td style="font-weight: bold;">Agent Name</td>
+				<td style="font-weight: bold;">Phone</td>
+				<td style="font-weight: bold;">Mobile</td>
+				<td style="font-weight: bold;">Commision Percentage</td>
+				<td style="font-weight: bold;">Total Commision</td>
+				<td style="font-weight: bold;">Total Payments</td>
+			</tr>
+			#foreach($agentPaymentUtility in $TotalAgentPaymentUtility.getAgentPaymentUtilities())
+			<tr>
+				<td>$agentPaymentUtility.getAgent().getName()</td>
+				<td>$agentPaymentUtility.getAgent().getPhone()</td>
+				<td>$agentPaymentUtility.getAgent().getMobile()</td>
+				<td>$agentPaymentUtility.getAgent().getCommisionPercent() %</td>
+				
+				#if($reportBean.isCompleteReport())
+				<td>Rs. $agentPaymentUtility.getTotalPaymentTillDate()</td>
+				#else
+				<td>Rs. $agentPaymentUtility.getTotalPaymentFromTill($reportBean.getFromDate(), $reportBean.getToDate())</td>
+				#end
+				<td>$agentPaymentUtility.getAgent().getPayments().size()</td>
+			</tr>
+			#end
+		</table>
+		
+		<br />
+		#if($reportBean.isCompleteReport())
+		<p>Total Commision : Rs. $TotalAgentPaymentUtility.getTotalPaymentTillDate()</p> 
+		#else
+		<p>Total Commision : Rs. $TotalAgentPaymentUtility.getTotalPaymentFromTill($reportBean.getFromDate(), $reportBean.getToDate())</p> 
+		#end
+		
+		#end
+		
+		#if($reportBean.isCustomers() || $reportBean.isAgents())
+		#set($total = 0)
+		<br />
+		<p style="font-weight: bold;">Total</p>
+		<br />
+		<table border="1" bgcolor="#C0C0C0">
+			#if($reportBean.isCustomers())
+			#if($reportBean.isPaid())
+			<tr>
+				<td>Total Amount Paid</td>
+				<td>
+				#if($reportBean.isCompleteReport())
+				Rs. $totalCustomerPaymentUtil.getAmountPaidTillDate() 
+				#set($total = $total + $totalCustomerPaymentUtil.getAmountPaidTillDate())
+				#else
+				Rs. $totalCustomerPaymentUtil.getAmountPaidFromTill($reportBean.getFromDate(), $reportBean.getToDate())
+				#set($total = $total + $totalCustomerPaymentUtil.getAmountPaidFromTill($reportBean.getFromDate(), $reportBean.getToDate()))
+				#end
+				</td>
+			</tr>
+			#end
+			#if($reportBean.isOverDue())
+			<tr>
+				<td>Total Over Due Paid</td>
+				<td>
+				#if($reportBean.isCompleteReport())
+				Rs. -$totalCustomerPaymentUtil.getPendingAmountTillDate()
+				#set($total = $total - $totalCustomerPaymentUtil.getPendingAmountTillDate())
+				#else
+				Rs. -$totalCustomerPaymentUtil.getPendingAmountFromTill($reportBean.getFromDate(), $reportBean.getToDate())
+				#set($total = $total - $totalCustomerPaymentUtil.getPendingAmountFromTill($reportBean.getFromDate(), $reportBean.getToDate()))
+				#end
+				</td>
+			</tr>
+			#end
+			#end
+			
+			#if($reportBean.isAgents())
+			<tr>
+				<td>Total Commision</td>
+				<td>
+				#if($reportBean.isCompleteReport())
+				Rs. -$TotalAgentPaymentUtility.getTotalPaymentTillDate()
+				#set($total = $total - $TotalAgentPaymentUtility.getTotalPaymentTillDate())
+				#else
+				Rs. -$TotalAgentPaymentUtility.getTotalPaymentFromTill($reportBean.getFromDate(), $reportBean.getToDate())
+				#set($total = $total - $TotalAgentPaymentUtility.getTotalPaymentFromTill($reportBean.getFromDate(), $reportBean.getToDate()))
+				#end
+				</td>
+			</tr>
+			#end
+			
+			<tr>
+				<td style="font-weight: bold;">Net Total</td>
+				<td style="font-weight: bold;">
+				Rs. $total
+				</td>
+			</tr>
+		</table>
+		#end
+	</div>
+</body>
+</html>

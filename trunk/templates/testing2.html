@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+</head>
+<body>
+	<div style="font-weight: bold;">
+		<table border="1">
+			<tr>
+				<td>Name</td>
+				<td>Site</td>
+				<td>Layout</td>
+				<td>Payment done till date</td>
+				<td>Remaning amount</td>
+				<td>Plan Start Date</td>
+				<td>Plan End Date</td>
+				<td>Agent/s</td>
+			</tr>
+			#foreach($totalPayment in $TotalPaymentUtility)
+				#foreach($payment in $totalPayment.getPaymentUtilList())
+				<tr>
+					<td>$totalPayment.getCustomer().getFirstName()</td>
+					<td>$payment.getSitePurchased().getSiteId()</td>
+					<td>$payment.getSitePurchased().getLayout()</td>
+					<td>$payment.getAmountPaidTillDate() </td>
+					<td>$payment.getRemainingAmount()</td>
+					#if($payment.getSitePurchased().getPaymentStartDate())
+					<td>$dateFormatter.format($payment.getSitePurchased().getPaymentStartDate())</td>
+					#else
+					<td>$dateFormatter.format($today)</td>
+					#end
+					<td>$dateFormatter.format($payment.getPlanEndDate())</td>
+					<td>$payment.getAgents()</td>
+				</tr>
+				#end
+			#end
+			<tr>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>
