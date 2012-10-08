@@ -1,0 +1,14 @@
+ <html>
+	<body>
+		<img src="$currentdir/templates/logo.gif" alt="logo" />
+        <h3>Customer Details Report</h3>
+		<p>Number of Customers = $customers.size()</p>
+		<br />
+		<table border="1">
+    		#foreach( $customer in $customers )
+    			$customer
+    		#end
+		</table>
+        <p>Call Today!</p>
+	</body>
+ </html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+</head>
+<body>
+	<img src="$currentdir/templates/logo.gif" alt="logo" width=90% height=90%/>
+	<br />
+	<br />
+	#foreach($TotalPaymentUtility in $TotalPaymentUtilityList)
+	<div style="font-size: small;">
+		<table border="1" width=50% bgcolor="#C0C0C0" style="font-weight: bold;">
+			<tr>
+				<td>Name</td>
+				<td>$TotalPaymentUtility.getCustomer().getFirstName()
+					$TotalPaymentUtility.getCustomer().getLastName()</td>
+			</tr>
+			<tr>
+				<td>Phone</td>
+				<td>$TotalPaymentUtility.getCustomer().getPhone()</td>
+			</tr>
+			<tr>
+				<td>Membership Id</td>
+				<td>$TotalPaymentUtility.getCustomer().getMembershipId()</td>
+			</tr>
+			<tr>
+				<td>Address</td>
+				<td>$TotalPaymentUtility.getCustomer().getAddress()</td>
+			</tr>
+			<tr>
+				<td>Area</td>
+				<td>$TotalPaymentUtility.getCustomer().getArea()</td>
+			</tr>
+		</table>
+		<br /> #foreach( $paymentUtility in
+		$TotalPaymentUtility.getPaymentUtilList() )
+		<table border="1">
+			<tr>
+				<td colspan="2" bgcolor="#C0C0C0" style="font-weight: bold;">Payment Details for Site
+					$paymentUtility.getSitePurchased() in Layout
+					$paymentUtility.getSitePurchased().getLayout()</td>
+			</tr>
+			<tr>
+				<td>Payment Plan : $paymentUtility.getPaymentPlan()</td>
+				<td>Amount Paid Till Date : Rs.
+					$paymentUtility.getAmountPaidTillDate()
+					#if($paymentUtility.getNextPayment().getPaymentDate()) <br /> Next Payment Due : 
+					$dateFormatter.format($paymentUtility.getNextPayment().getPaymentDate())
+					#end #if($paymentUtility.getNextPayment().getInstallmentAmount()) <br />
+					Next Payment Due Amount : Rs.
+					$paymentUtility.getNextPayment().getInstallmentAmount() #end <br />
+					Remaining Amount : Rs. $paymentUtility.getRemainingAmount()
+				</td>
+			</tr>
+		</table>
+		<br />
+		<table border="1">
+			<tr>
+				<td bgcolor="#C0C0C0" style="font-weight: bold;">Sl.No</td>
+				<td bgcolor="#C0C0C0" style="font-weight: bold;">Installment Name</td>
+				<td bgcolor="#C0C0C0" style="font-weight: bold;">Installment Date</td>
+				<td bgcolor="#C0C0C0" style="font-weight: bold;">Installment Amount</td>
+				<td bgcolor="#C0C0C0" style="font-weight: bold;">Amount Paid Date</td>
+				<td bgcolor="#C0C0C0" style="font-weight: bold;">Payment Status</td>
+				<td bgcolor="#C0C0C0" style="font-weight: bold;">Agent</td>
+			</tr>
+			#set($val = 1) #foreach($payment in $paymentUtility.getPlanUI())
+			<tr>
+				<td>$val</td>
+				<td>$payment.getDetails().getInstallmentName()</td>
+				<td>$dateFormatter.format($payment.getPaymentDate())</td>
+				<td>Rs. $payment.getInstallmentAmount()</td>
+				#if($payment.getPayment())
+				<td bgcolor="CCFF99">$dateFormatter.format($payment.getPayment().getPaymentDate())</td>
+				<td>Paid</td>
+				<td>$payment.getPayment().getAgent()</td>
+				#elseif($payment.isBeforeToday())
+				<td bgcolor="F5A9A9"></td>
+				<td>Over Due</td>
+				<td /> #else
+				<td bgcolor="ORANGE"></td>
+				<td>Due</td>
+				<td /> #end
+			</tr>
+			#set($val = $val + 1) #end
+		</table>
+		<br /> #end
+	</div>
+	<br />
+	<br />
+	#end
+</body>
+</html>

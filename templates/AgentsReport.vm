@@ -1,0 +1,14 @@
+ <html>
+	<body>
+		<img src="$currentdir/templates/logo.gif" alt="logo" />
+        <h3>Agents Details Report</h3>
+		<p>Number of Agents = $Agents.size()</p>
+		<br />
+		<table border="1">
+    		#foreach( $customer in $Agents )
+    			$customer
+    		#end
+		</table>
+        <p>Call Today!</p>
+	</body>
+ </html>
